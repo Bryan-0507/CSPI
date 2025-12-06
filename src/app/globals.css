@@ -95,7 +95,7 @@
   --chart-5: oklch(0.5600 0 0);
   --sidebar: oklch(0.9900 0 0);
   --sidebar-foreground: oklch(0 0 0);
-  --sidebar-primary: oklch(0 0 0);
+  --sidebar-primary: #72d5d4;
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.9400 0 0);
   --sidebar-accent-foreground: oklch(0 0 0);
@@ -186,5 +186,19 @@
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+  }
+}
+
+@layer utilities {
+  /* Push content based on the sidebar's state (desktop) */
+  [data-sidebar][data-state="expanded"] + [data-sidebar-inset] {
+    padding-left: var(--sidebar-width, 4rem);
+  }
+
+  /* On smaller screens, the sidebar becomes a Sheet; content should not be pushed */
+  @media (max-width: 1024px) {
+    [data-sidebar] + [data-sidebar-inset] {
+      padding-left: 0;
+    }
   }
 }
