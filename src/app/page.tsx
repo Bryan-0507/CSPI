@@ -8,8 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter()
+
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -44,13 +47,23 @@ export default function LoginPage() {
 
     if (user !== expectedUser || password !== expectedPassword) {
       toast.error("Error", {
-        description: "Credenciales Incorrectas"
+        description: "Credenciales Incorrectas",
       });
-    } else {
-      toast.success("¡Bienvenido!", {
-        description: "Has iniciado sesión correctamente",
-      });
+      setIsLoading(false);
+      return;
     }
+
+    toast.success("¡Bienvenido!", {
+      description: "Has iniciado sesión correctamente",
+    });
+
+    // “Token” de sesión sencillo
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cspi_session", "true");
+    }
+
+    // Redirigir al área autenticada
+    router.push("/promissory");
 
     setIsLoading(false);
   };
@@ -130,7 +143,7 @@ export default function LoginPage() {
                   className="w-full hover:bg-blue-300 transition ease-in cursor-pointer duration-100 mt-4"
                   disabled={isLoading}
                 >
-                  Iniciar sesión
+                  {isLoading ? "Validando..." : "Iniciar sesión"}
                 </Button>
               </form>
             </CardContent>
