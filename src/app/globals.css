@@ -77,7 +77,7 @@
   --popover: oklch(0.9900 0 0);
   --popover-foreground: oklch(0 0 0);
   --primary: #72d5d4;
-  --primary-foreground: oklch(1 0 0);
+  --primary-foreground: oklch(0 0 0);
   --secondary: oklch(0.9400 0 0);
   --secondary-foreground: oklch(0 0 0);
   --muted: oklch(0.9700 0 0);
@@ -190,12 +190,17 @@
 }
 
 @layer utilities {
-  /* Push content based on the sidebar's state (desktop) */
+  /* Expanded → empuja usando el ancho full */
   [data-sidebar][data-state="expanded"] + [data-sidebar-inset] {
-    padding-left: var(--sidebar-width, 4rem);
+    padding-left: var(--sidebar-width);
   }
 
-  /* On smaller screens, the sidebar becomes a Sheet; content should not be pushed */
+  /* Collapsed → empuja solo el ancho del ícono */
+  [data-sidebar][data-state="collapsed"] + [data-sidebar-inset] {
+    padding-left: var(--sidebar-width-icon);
+  }
+
+  /* Mobile (usa sheet) → no empuja */
   @media (max-width: 1024px) {
     [data-sidebar] + [data-sidebar-inset] {
       padding-left: 0;

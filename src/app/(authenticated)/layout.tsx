@@ -36,16 +36,22 @@ export default function AuthenticatedLayout({ children }: AuthenticatedLayoutPro
   }
 
    return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset className="
-        md:peer-data-[variant=inset]:rounded-none
-        md:peer-data-[variant=inset]:shadow-none
-        md:peer-data-[variant=inset]:m-0
-      ">
-        <Toolbar />
-        <main className="p-4">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
-  );
+        <SidebarProvider>
+            <div className="flex w-full min-h-screen">
+            <AppSidebar className="peer" />
+
+            <SidebarInset
+                className="
+                flex-1
+                md:peer-data-[variant=inset]:rounded-none
+                md:peer-data-[variant=inset]:shadow-none
+                md:peer-data-[variant=inset]:m-0
+                "
+            >
+                <Toolbar />
+                <main className="p-4 bg-gray-100 w-full">{children}</main>
+            </SidebarInset>
+            </div>
+        </SidebarProvider>
+    );
 }
