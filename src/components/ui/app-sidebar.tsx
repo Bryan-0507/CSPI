@@ -37,7 +37,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar
       variant="inset"
       collapsible="icon"
-      className="p-0 group-data-[collapsible=icon]:!py-2 border-r border-b-black"
+      className="p-0 group-data-[collapsible=icon]:!py-2 border-r border-b-black border-8"
       {...props}
     >
       <SidebarHeader>
