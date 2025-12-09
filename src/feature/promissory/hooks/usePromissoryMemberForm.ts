@@ -29,10 +29,9 @@ export function usePromissoryMemberForm(
       direccionSocio: "",
 
       montoPrestamo: undefined as unknown as number,
-      montoDeudaAnterior: null,
+      montoDeudaAnterior: undefined as unknown as number,
       tasaInteresAnual: 12,
-      totalIntereses: null,
-      totalAPagar: null,
+      totalIntereses: undefined as unknown as number,
 
       fechaInicioPeriodo: null,
       fechaFinPeriodo: null,
@@ -47,14 +46,9 @@ export function usePromissoryMemberForm(
       anioPrimeraCuota: today.getFullYear(),
       diaPagoMensual: 5,
 
-      ciudadFirma: "Guatemala",
-      diaFirma: today.getDate(),
-      mesFirma: today.getMonth() + 1,
-      anioFirma: today.getFullYear(),
-
-      diaAutorizacionJD: today.getDate(),
-      mesAutorizacionJD: today.getMonth() + 1,
-      anioAutorizacionJD: today.getFullYear(),
+      ciudadFirma: "Ciudad de Guatemala",
+      fechaFirma: today,
+      fechaAutorizacionJD: today,
 
       tieneFiadores: false,
       fiadores: [],

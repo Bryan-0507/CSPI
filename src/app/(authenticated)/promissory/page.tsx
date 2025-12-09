@@ -3,6 +3,8 @@
 import { useEffect } from "react"
 import { FormProvider, useFieldArray } from "react-hook-form"
 import { usePromissoryMemberForm } from "@/feature/promissory/hooks/usePromissoryMemberForm"
+import { usePromissoryMemberDocument } from "@/feature/promissory/hooks/usePromissoryMemberDocument"
+import type { PagareSocioFormValues } from "@/feature/promissory/types/promissoryMember.type"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { InputField } from "@/components/shared/InputField"
@@ -26,6 +28,12 @@ import {
 export default function PromissoryPage() {
   const form = usePromissoryMemberForm()
   const { handleSubmit, watch, setValue, control, formState } = form
+
+  const { downloadWord, isGenerating } = usePromissoryMemberDocument()
+
+  const handleDownloadWord = handleSubmit((values) =>
+    downloadWord(values as unknown as PagareSocioFormValues)
+  )
 
   const tieneFiadores = watch("tieneFiadores")
 
@@ -94,6 +102,7 @@ export default function PromissoryPage() {
                     label="DPI del socio"
                     placeholder="Número de DPI"
                     icon={<FileText className="w-4 h-4" />}
+                    visualType="dpi"
                   />
                   <InputField
                     name="direccionSocio"
@@ -115,12 +124,14 @@ export default function PromissoryPage() {
                     label="Monto del préstamo (capital)"
                     placeholder="Ej. 25,000.00"
                     icon={<Activity className="w-4 h-4" />}
+                    visualType="money"
                   />
                   <InputField
                     name="montoDeudaAnterior"
                     label="Deuda anterior (opcional)"
                     placeholder="Ej. 5,000.00"
                     icon={<AlertTriangle className="w-4 h-4" />}
+                    visualType="money"
                   />
                   <InputField
                     name="tasaInteresAnual"
@@ -130,13 +141,9 @@ export default function PromissoryPage() {
                   />
                   <InputField
                     name="totalIntereses"
-                    label="Total intereses (opcional)"
+                    label="Total intereses"
                     placeholder="Ej. 3,000.00"
-                  />
-                  <InputField
-                    name="totalAPagar"
-                    label="Total a pagar (opcional)"
-                    placeholder="Ej. 28,000.00"
+                    visualType="money"
                   />
                 </div>
               </section>
@@ -174,6 +181,7 @@ export default function PromissoryPage() {
                     name="montoCuota"
                     label="Monto de cada cuota"
                     placeholder="Ej. 500.00"
+                    visualType="money"
                   />
                   <InputField
                     name="mesInicioIntereses"
@@ -289,6 +297,7 @@ export default function PromissoryPage() {
                             label="DPI del fiador"
                             placeholder="Número de DPI"
                             icon={<Shield className="w-4 h-4" />}
+                            visualType="dpi"
                           />
                           <InputField
                             name={`fiadores.${index}.direccion`}
@@ -324,11 +333,39 @@ export default function PromissoryPage() {
                 )}
               </section>
 
-              <div className="flex justify-end pt-4">
-                <Button type="submit" className="min-w-[160px]">
-                  Generar pagaré
+              <div className="flex justify-end gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isGenerating}
+                  onClick={handleDownloadWord}
+                  className="flex items-center gap-2 border-1 border-[#2f7998] text-[#2f7998] font-semibold cursor-pointer transition-transform duration-150 hover:scale-102 hover:bg-[#e3f3fa] hover:text-[#2f7998]"
+                >
+                  <span className="w-5 h-5" dangerouslySetInnerHTML={{ __html: `
+    <svg fill="#2f7998" version="1.1" xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 470.586 470.586" stroke="#2f7998">
+      <g><g>
+        <path d="M327.081,0H90.234c-15.9,0-28.854,12.959-28.854,28.859v412.863c0,15.924,12.953,28.863,28.854,28.863H380.35
+          c15.917,0,28.855-12.939,28.855-28.863V89.234L327.081,0z M333.891,43.184l35.996,39.121h-35.996V43.184z M384.972,441.723
+          c0,2.542-2.081,4.629-4.634,4.629H90.234c-2.551,0-4.62-2.087-4.62-4.629V28.859c0-2.548,2.069-4.613,4.62-4.613h219.41v70.181
+          c0,6.682,5.444,12.099,12.129,12.099h63.198V441.723z M131.858,161.048l-25.29-99.674h18.371l11.688,49.795
+          c1.646,6.954,3.23,14.005,4.592,20.516c1.555-6.682,3.425-13.774,5.272-20.723l13.122-49.583h16.863l11.969,49.929
+          c1.552,6.517,3.094,13.243,4.395,19.742c1.339-5.784,2.823-11.718,4.348-17.83l0.562-2.217l12.989-49.618h17.996l-28.248,99.673
+          h-16.834l-12.395-51.173c-1.531-6.289-2.87-12.052-3.975-17.693c-1.292,5.618-2.799,11.366-4.643,17.794l-13.964,51.072h-16.819
+          V161.048z M242.607,139.863h108.448c5.013,0,9.079,4.069,9.079,9.079c0,5.012-4.066,9.079-9.079,9.079H242.607
+          c-5.012,0-9.079-4.067-9.079-9.079C233.529,143.933,237.596,139.863,242.607,139.863z M360.135,209.566
+          c0,5.012-4.066,9.079-9.079,9.079H125.338c-5.012,0-9.079-4.067-9.079-9.079c0-5.013,4.066-9.079,9.079-9.079h225.718
+          C356.068,200.487,360.135,204.554,360.135,209.566z M360.135,263.283c0,5.012-4.066,9.079-9.079,9.079H125.338
+          c-5.012,0-9.079-4.067-9.079-9.079c0-5.013,4.066-9.079,9.079-9.079h225.718C356.068,254.204,360.135,258.271,360.135,263.283z
+          M360.135,317c0,5.013-4.066,9.079-9.079,9.079H125.338c-5.012,0-9.079-4.066-9.079-9.079c0-5.012,4.066-9.079,9.079-9.079h225.718
+          C356.068,307.921,360.135,311.988,360.135,317z M360.135,371.474c0,5.013-4.066,9.079-9.079,9.079H125.338
+          c-5.012,0-9.079-4.066-9.079-9.079s4.066-9.079,9.079-9.079h225.718C356.068,362.395,360.135,366.461,360.135,371.474z"/>
+      </g></g>
+    </svg>
+  ` }} />
+                  Descargar Word
                 </Button>
-              </div>
+                </div>
             </form>
           </FormProvider>
         </CardContent>
