@@ -1,17 +1,22 @@
-import { z } from "zod";
+import { z } from "zod"
 
+// Schema para fiadores / avales
 export const fiadorSchema = z.object({
   nombreCompleto: z
     .string()
     .min(1, "El nombre del fiador es obligatorio"),
+
+  // DPI: exactamente 13 dígitos (sin espacios)
   dpi: z
     .string()
-    .min(8, "El DPI del fiador es obligatorio"),
+    .regex(/^\d{13}$/, "El DPI del fiador debe tener exactamente 13 dígitos"),
+
   direccion: z
     .string()
     .min(1, "La dirección del fiador es obligatoria"),
-});
+})
 
+// Schema principal para el pagaré de socio/miembro
 export const pagareSocioSchema = z
   .object({
     // Identificación del pagaré
@@ -23,9 +28,12 @@ export const pagareSocioSchema = z
     nombreSocio: z
       .string()
       .min(1, "El nombre del socio es obligatorio"),
+
+    // DPI del socio: exactamente 13 dígitos (sin espacios)
     dpiSocio: z
       .string()
-      .min(1, "El DPI del socio es obligatorio"),
+      .regex(/^\d{13}$/, "El DPI del socio debe tener exactamente 13 dígitos"),
+
     direccionSocio: z
       .string()
       .min(1, "La dirección del socio es obligatoria"),
@@ -35,8 +43,8 @@ export const pagareSocioSchema = z
       .number()
       .positive("El monto debe ser mayor que cero"),
 
-    montoDeudaAnterior: z
-      .coerce
+    // Deuda anterior: sólo aplica para algunos pagarés viejos
+    montoDeudaAnterior: z.coerce
       .number()
       .nonnegative("El monto no puede ser negativo")
       .optional()
@@ -47,30 +55,21 @@ export const pagareSocioSchema = z
       .min(0, "La tasa no puede ser negativa")
       .max(100, "La tasa no puede ser mayor a 100"),
 
-    totalIntereses: z
-      .coerce
+    // Total de intereses: requerido (se usa siempre en el texto)
+    totalIntereses: z.coerce
       .number()
-      .nonnegative("El valor no puede ser negativo")
-      .optional()
-      .nullable(),
+      .nonnegative("El valor no puede ser negativo"),
 
-    totalAPagar: z
-      .coerce
-      .number()
-      .nonnegative("El valor no puede ser negativo")
-      .optional()
-      .nullable(),
-
-    // Opcional: período del préstamo (para los pagarés viejos tipo 2018, 2020)
+    // Opcional: período del préstamo (para formatos viejos tipo 2018/2020)
     fechaInicioPeriodo: z
-        .date()
-        .optional()
-        .nullable(),
+      .date()
+      .optional()
+      .nullable(),
 
     fechaFinPeriodo: z
-        .date()
-        .optional()
-        .nullable(),
+      .date()
+      .optional()
+      .nullable(),
 
     // Plan de pagos
     cantidadCuotas: z.coerce
@@ -110,44 +109,18 @@ export const pagareSocioSchema = z
       .min(1, "Día inválido")
       .max(31, "Día inválido"),
 
-    // Datos formales
+    // Datos formales / firma
     ciudadFirma: z
       .string()
       .min(1, "La ciudad es obligatoria"),
 
-    diaFirma: z.coerce
-      .number()
-      .int()
-      .min(1)
-      .max(31),
+    fechaFirma: z.date({
+      error: "La fecha de firma es obligatoria",
+    }),
 
-    mesFirma: z.coerce
-      .number()
-      .int()
-      .min(1)
-      .max(12),
-
-    anioFirma: z.coerce
-      .number()
-      .int()
-      .min(2000),
-
-    diaAutorizacionJD: z.coerce
-      .number()
-      .int()
-      .min(1)
-      .max(31),
-
-    mesAutorizacionJD: z.coerce
-      .number()
-      .int()
-      .min(1)
-      .max(12),
-
-    anioAutorizacionJD: z.coerce
-      .number()
-      .int()
-      .min(2000),
+    fechaAutorizacionJD: z.date({
+      error: "La fecha de autorización de Junta Directiva es obligatoria",
+    }),
 
     // Fiadores / avales
     tieneFiadores: z.boolean().default(false),
