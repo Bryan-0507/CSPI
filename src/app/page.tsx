@@ -22,8 +22,8 @@ export default function LoginPage() {
     e.preventDefault();
     setErrors({});
 
-    const expectedUser = process.env.NEXT_PUBLIC_CSPI_USER;
-    const expectedPassword = process.env.NEXT_PUBLIC_CSPI_PASSWORD;
+    const expectedUser = "CSPI_ADMIN";
+    const expectedPassword = "xayn0340";
 
     const newErrors: { user?: string; password?: string } = {};
 
